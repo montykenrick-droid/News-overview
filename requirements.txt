@@ -1,0 +1,4 @@
+feedparser
+scikit-learn
+vaderSentiment
+numpy
