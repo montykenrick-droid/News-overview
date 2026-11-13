@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta http-equiv="refresh" content="1800"><title>NewsLens</title>
+<style>
+:root{--bg:#fff;--fg:#111;--mut:#6e6e73;--line:#e5e5ea;--card:#f5f5f7;--acc:#b8161b;--L:#3b82c4;--C:#8a8a8f;--R:#d9622b;--S:#7a5cc0}
+@media(prefers-color-scheme:dark){:root{--bg:#000;--fg:#f5f5f7;--mut:#a1a1a6;--line:#2c2c2e;--card:#1c1c1e}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:pointer}
+header{position:sticky;top:0;z-index:9;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.bar{max-width:1120px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px}
+.logo{font:700 22px Georgia,serif;letter-spacing:-.02em}.logo b{color:var(--acc)}.sp{flex:1}.upd{font-size:12px;color:var(--mut)}
+.pill{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 14px;font-size:14px;white-space:nowrap}
+.pill.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.nav{max-width:1120px;margin:0 auto;padding:0 20px 10px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}
+.nav.sub .pill{font-size:13px;padding:4px 12px;background:none}.nav.sub .pill.on{background:var(--fg)}
+main{max-width:1120px;margin:0 auto;padding:28px 20px 80px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.015em;line-height:1.2;margin:0}
+h2.sec{font:600 13px/1 -apple-system,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin:44px 0 16px}
+small,.k{color:var(--mut);font-size:13px}.k{text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.ph{aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:linear-gradient(135deg,var(--card),var(--line))}.ph{position:relative}.ph::after{content:attr(data-t);position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:10px;font:700 clamp(18px,3vw,28px) Georgia,serif;letter-spacing:-.01em;color:var(--mut);opacity:.6}.ph img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;display:block}
+.lead{display:grid;grid-template-columns:1.5fr 1fr;gap:28px}.lead h1{font-size:clamp(28px,4vw,44px);margin:12px 0 8px}
+.side{display:flex;flex-direction:column;gap:18px}.side a{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:start}.side h3{font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:28px 22px}.card h3{font-size:19px;margin:10px 0 4px}
+.card:hover h3,.side a:hover h3,.lead a:hover h1{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.art{max-width:760px;margin:0 auto}.art h1{font-size:clamp(28px,5vw,42px);margin:10px 0 14px}
+.sum{font-size:18px;margin:22px 0}.box{background:var(--card);border-radius:14px;padding:18px 20px;margin:22px 0}
+.box h4{margin:0 0 10px;font:600 13px/1 -apple-system,sans-serif;text-transform:uppercase;letter-spacing:.07em;color:var(--mut)}
+.fact{display:flex;gap:10px;margin:8px 0;align-items:flex-start}.dot{flex:none;width:9px;height:9px;border-radius:50%;margin-top:8px}
+.confirmed{background:#2e9e5b}.partial{background:#e0a21b}.unconfirmed{background:#c4372c}
+.tag{display:inline-block;font-size:11px;font-weight:600;border-radius:5px;padding:1px 7px;margin-left:6px;vertical-align:2px;border:1px solid var(--line);color:var(--mut)}
+.picker{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 4px;align-items:center}
+select{font:inherit;font-size:14px;padding:6px 10px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--fg)}
+.row{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:14px}.row .n{width:60px;color:var(--mut)}
+.trk{flex:1;height:8px;border-radius:4px;background:var(--line);position:relative}.trk i{position:absolute;top:0;bottom:0;border-radius:4px}
+.item{border-top:1px solid var(--line);padding:16px 0}.item h3{font-size:20px;margin:4px 0}
+.btn{display:inline-block;margin-top:10px;background:var(--fg);color:var(--bg);border-radius:99px;padding:8px 18px;font-size:14px;font-weight:600}
+.flag{font-size:13px;color:#a8421b;margin:6px 0}.note{font-size:13px;color:var(--mut);border-top:1px solid var(--line);margin-top:34px;padding-top:14px}
+.rd{display:flex;gap:16px;padding:20px 0;border-top:1px solid var(--line)}.rd b{font:700 28px Georgia,serif;color:var(--line)}
+.dl{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.bias{display:flex;gap:8px;overflow-x:auto;margin:0 0 18px;scrollbar-width:none}.by small{display:block;color:var(--mut);margin-top:4px;line-height:1.35}
+footer{border-top:1px solid var(--line);background:var(--card);margin-top:40px;padding:40px 0 calc(30px + env(safe-area-inset-bottom))}.fin{max-width:1120px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px}
+.fcol h5{margin:0 0 10px;font:600 12px/1 -apple-system,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}.fcol a{display:block;font-size:14px;padding:3px 0}.fcol a:hover{text-decoration:underline}.fcol p{font-size:14px;color:var(--mut);margin:8px 0 0;max-width:300px}
+.fine{max-width:1120px;margin:30px auto 0;padding:20px 20px 0;border-top:1px solid var(--line);font-size:12px;color:var(--mut)}.fine p{margin:6px 0;max-width:820px}.fine a{text-decoration:underline}
+@media(max-width:760px){.fin{grid-template-columns:1fr 1fr}.fcol.wide{grid-column:1/-1}}
+@media(max-width:760px){.lead{grid-template-columns:1fr}.upd{display:none}.bar{padding:10px 16px}main{padding:20px 16px 70px}}
+</style></head><body>
+<header><div class="bar"><a class="logo" href="#/">News<b>Lens</b></a><span class="sp"></span><span class="upd" id="upd"></span>
+<a class="pill" id="rdbtn" href="#/roundup">Round-up</a></div>
+<nav class="nav" id="cats"></nav><nav class="nav sub" id="regs"></nav></header>
+<main id="m"></main>
+<footer><div class="fin"><div class="fcol wide"><div class="logo">News<b>Lens</b></div><p>See how outlets across the world and the political spectrum report the same story. Updated every 30 minutes.</p></div>
+<div class="fcol"><h5>Sections</h5><div id="fc"></div></div><div class="fcol"><h5>Regions</h5><div id="fr"></div></div>
+<div class="fcol"><h5>More</h5><a href="#/">Top stories</a><a href="#/roundup">Round-up of the day</a><a href="#/hidden">Hidden stories</a><a href="#/about">How it works</a></div></div>
+<div class="fine"><p id="fs"></p><p>Headlines, snippets and images belong to their publishers, and NewsLens links to the original articles. Political leanings are approximate estimates drawn from public media-bias ratings. Tone scores, fact labels and summaries are automated and can be wrong, so always check the original reports.</p><p>© NewsLens · <a href="#/" onclick="scrollTo(0,0)">Back to top</a></p></div></footer>
+<script id="d" type="application/json">__DATA__</script>
+<script>
+const D=JSON.parse(document.getElementById('d').textContent),$=s=>document.querySelector(s),
+esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
+COL={Left:'var(--L)',Centre:'var(--C)',Right:'var(--R)','State-run':'var(--S)'},
+img=(u,r)=>u?`<img src="${esc(u)}" data-r="${esc((r||[]).join('|'))}" loading="lazy" referrerpolicy="no-referrer" onerror="nx(this)" alt="">`:'',
+pic=s=>img((s.imgs||[])[0],(s.imgs||[]).slice(1));
+function nx(e){const r=(e.dataset.r||'').split('|').filter(Boolean);if(r.length){e.dataset.r=r.slice(1).join('|');e.src=r[0]}else e.remove()}
+$('#fc').innerHTML=['UK','US',...D.cats].map(c=>`<a href="#/${['UK','US'].includes(c)?'r':'c'}/${encodeURIComponent(c)}">${c}</a>`).join('');$('#fr').innerHTML=D.regions.filter(r=>!['UK','US'].includes(r)).map(r=>`<a href="#/r/${encodeURIComponent(r)}">${r}</a>`).join('');$('#fs').textContent=D.outlets.length+' outlets monitored · last updated '+D.updated;
+$('#upd').textContent='Updated '+D.updated+' · '+D.outlets.length+' outlets';
+let bias='All',area='All areas',country='',lastHash='';
+const tag=s=>bias=='All'?'':`<div class="by">${s.items.filter(i=>i.bucket==bias).slice(0,2).map(i=>`<small><b style="color:${COL[bias]}">${esc(i.outlet)}</b>: ${esc(i.title)}</small>`).join('')}</div>`;
+const card=s=>`<a class="card" href="#/s/${s.id}"><div class="ph" data-t="NewsLens">${pic(s)}</div><h3>${esc(s.title)}</h3><small>${esc(s.cat)} · ${s.outlets} outlet${s.outlets>1?'s':''}</small>${tag(s)}</a>`;
+function nav(kind,val){
+ $('#cats').innerHTML=[['Home','#/',kind=='h'],['UK','#/r/UK',kind=='r'&&val=='UK'],['US','#/r/US',kind=='r'&&val=='US'],...D.cats.map(c=>[c,'#/c/'+encodeURIComponent(c),kind=='c'&&val==c]),['Hidden stories','#/hidden',kind=='hd']].map(([n,h,on])=>`<a class="pill ${on?'on':''}" href="${h}">${n}</a>`).join('');
+ $('#regs').innerHTML=D.regions.filter(r=>!['UK','US'].includes(r)).map(r=>`<a class="pill ${kind=='r'&&val==r?'on':''}" href="#/r/${encodeURIComponent(r)}">${r}</a>`).join('');
+ $('#rdbtn').classList.toggle('on',kind=='rd')}
+function listView(title,list,kind,val,why){
+ let areaBar='';
+ if(kind=='c'&&val=='Politics'){
+  const cc={};list.forEach(s=>(s.places||[]).forEach(c=>cc[c]=(cc[c]||0)+1));
+  if(country)list=list.filter(s=>(s.places||[]).includes(country));else if(area!='All areas')list=list.filter(s=>s.regions.includes(area));
+  const nm=r=>r=='Americas'?'Canada & Latin America':r;
+  areaBar=`<div class="bias" id="area">${['All areas','UK','US',...D.regions.filter(r=>!['UK','US','Global'].includes(r))].map(r=>`<button class="pill ${!country&&area==r?'on':''}" data-a="${r}">${nm(r)}</button>`).join('')}</div><div style="margin:-6px 0 18px"><select id="cty"><option value="">Choose a country…</option>${Object.entries(cc).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<option value="${esc(c)}" ${country==c?'selected':''}>${esc(c)} (${n})</option>`).join('')}</select></div>`}
+ if(bias!='All')list=list.filter(s=>s.items.some(i=>i.bucket==bias));
+ const bar=areaBar+`<div class="bias" id="bias">${['All','Left','Centre','Right','State-run'].map(g=>`<button class="pill ${bias==g?'on':''}" data-b="${g}">${g=='All'?'All perspectives':g+' outlets'}</button>`).join('')}</div>`+(bias!='All'?`<p style="margin:0 0 20px;font-size:13px;color:var(--mut)">Showing stories covered by ${bias.toLowerCase()} outlets, with the headlines they published.</p>`:'');
+ nav(kind,val);let h=`<h1 style="font-size:clamp(28px,4vw,40px);margin-bottom:24px">${esc(title)}</h1>`+(kind=='hd'?`<p style="color:var(--mut);margin:-10px 0 26px">Stories only one or two outlets are reporting. They get less cross-checking, so treat them with extra care.</p>`:'');
+ if(!list.length)h+=bar+`<p class="box">No stories in this section right now. Coverage here is limited, so it may fill as outlets publish.</p>`;
+ else{if(kind=='h'){const[a,...r]=list,side=r.slice(0,4),rest=r.slice(4,40);
+  h=bar+`<div class="lead"><a href="#/s/${a.id}"><div class="ph" data-t="NewsLens">${pic(a)}</div><small class="k" style="display:block;margin-top:14px">${esc(a.cat)} · ${a.outlets} outlets</small><h1>${esc(a.title)}</h1><p style="color:var(--mut);margin:0">${esc(a.summary.slice(0,200))}</p>${tag(a)}</a>
+  <div class="side">${side.map(s=>`<a href="#/s/${s.id}"><div class="ph" data-t="NewsLens">${pic(s)}</div><div><h3>${esc(s.title)}</h3><small>${esc(s.cat)} · ${s.outlets} outlets</small>${tag(s)}</div></a>`).join('')}</div></div>
+  <h2 class="sec">More stories</h2><div class="grid">${rest.map(card).join('')}</div>`}
+  else h+=bar+`<div class="grid">${list.map(card).join('')}</div>`}
+ if((kind=='c'||kind=='r')&&list.length<4)h+=`<p class="note">Note: coverage of ${esc(why)} is limited right now, so few stories here are reported by several outlets. See <a href="#/hidden" style="text-decoration:underline">Hidden stories</a> for more.</p>`;
+ $('#m').innerHTML=h;document.querySelectorAll('#bias button').forEach(b=>b.onclick=()=>{bias=b.dataset.b;route()});document.querySelectorAll('#area button').forEach(b=>b.onclick=()=>{area=b.dataset.a;country='';route()});const cs=$('#cty');if(cs)cs.onchange=e=>{country=e.target.value;area='All areas';route()}}
+function home(){listView('Top stories',D.stories.filter(s=>s.home),'h')}
+function hidden(){listView('Hidden stories',D.stories.filter(s=>s.hidden),'hd')}
+function story(id){
+ const s=D.stories.find(x=>x.id==id);nav('x');
+ if(!s){$('#m').innerHTML='<div class="art"><h1>This story has moved on</h1><p>Stories update every 30 minutes and this one is no longer in the feeds. <a href="#/" style="text-decoration:underline">Back to top stories</a></p></div>';return}
+ const groups=['Left','Centre','Right','State-run'].filter(g=>s.items.some(i=>i.bucket==g));let mode='Summary';
+ const draw=()=>{
+  const sel=mode=='Summary'?null:s.items.filter(i=>i.bucket==mode||i.outlet==mode);let body='';
+  if(!sel){
+   body=`<p class="sum">${esc(s.summary)}</p>`+(s.facts.length?`<div class="box"><h4>Key facts and how widely they are reported</h4>${s.facts.map(f=>`<div class="fact"><span class="dot ${f.conf}"></span><span>${esc(f.t)} <span class="tag">${f.conf=='confirmed'?'Confirmed by '+f.n+' outlets':f.conf=='partial'?'Reported by 2 outlets':'Unverified: single source'}</span></span></div>`).join('')}</div>`:'');
+   if(s.related&&s.related.length)body+=`<div class="box"><h4>Related developments</h4>${s.related.map(r=>`<p style="margin:6px 0"><a href="#/s/${r.id}" style="text-decoration:underline">${esc(r.title)}</a></p>`).join('')}</div>`;
+   const a=s.analysis;if(a.show){const mx=(v)=>((v+1)/2*100).toFixed(0);
+    body+=`<div class="box"><h4>How coverage differs</h4>${Object.entries(a.tones).map(([g,v])=>`<div class="row"><span class="n"><span class="dl" style="background:${COL[g]}"></span>${g}</span><div class="trk"><i style="left:${Math.min(mx(v),96)}%;width:4%;background:${COL[g]}"></i></div><small style="width:70px">${v>.1?'more positive':v<-.1?'more negative':'neutral'} tone</small></div>`).join('')}
+    <small>Headline tone by outlet group, from negative (left) to positive (right).</small>
+    ${Object.entries(a.words).filter(([,w])=>w.length).map(([g,w])=>`<p style="margin:10px 0 0;font-size:14px"><b>${g}</b> stresses: ${w.map(esc).join(', ')}</p>`).join('')}${a.note?`<p style="margin:12px 0 0">${esc(a.note)}</p>`:''}</div>`}
+   const fl=s.items.filter(i=>i.flags.length);
+   body+=(s.limited?`<p class="note">Coverage note: only ${s.outlets} outlet${s.outlets>1?'s':''} cover${s.outlets>1?'':'s'} this story, so it could not be widely cross-checked.</p>`:'')+
+    (fl.length?`<div class="note"><b>Flagged for review</b>${fl.map(i=>`<p class="flag">${esc(i.outlet)}: ${i.flags.map(esc).join('; ')}</p>`).join('')}</div>`:'')+
+    `<p class="note">${D.ai?'Summary written by AI from outlet headlines and snippets.':'Summary built automatically from outlet headlines and snippets.'} Fact labels show how many outlets report a claim; they do not prove it true. Always check original reports.</p>`}
+  else body=sel.map(i=>`<div class="item"><div class="ph" data-t="${esc(i.outlet)}" style="margin-bottom:12px">${img(i.img)}</div><span class="k" style="color:${COL[i.bucket]}">${esc(i.outlet)} · ${i.bucket}</span><h3>${esc(i.title)}</h3>
+   <div class="box"><h4>Summary of this article</h4><p style="margin:0">${esc(i.summary||i.excerpt)||'This outlet’s snippet was not available, so only the headline above can be shown. Open the article for the full report.'}</p></div>
+   <div class="box"><h4>Fact-check</h4>${s.facts.length?s.facts.map(f=>`<div class="fact"><span class="dot ${f.conf}"></span><span>${esc(f.t)} <span class="tag">${(f.by||[]).includes(i.outlet)?'Mentioned here':'Not mentioned here'} · ${f.conf=='confirmed'?'confirmed by '+f.n+' outlets':f.conf=='partial'?'2 outlets':'single source'}</span></span></div>`).join(''):'<small>No cross-checked facts for this story yet.</small>'}${i.flags.map(f=>`<p class="flag">⚑ ${esc(f)}</p>`).join('')||'<small style="display:block;margin-top:8px">No wording concerns flagged.</small>'}</div>
+   <a class="btn" href="${esc(i.link)}" target="_blank" rel="noopener">Read on ${esc(i.outlet)} ↗</a></div>`).join('');
+  $('#v').innerHTML=body;
+  $('#pk').innerHTML=['Summary',...groups].map(g=>`<button class="pill ${mode==g?'on':''}" data-m="${g}">${g}</button>`).join('')+
+   `<select id="so"><option value="">Choose an outlet…</option>${[...new Set(s.items.map(i=>i.outlet))].map(o=>`<option ${mode==o?'selected':''}>${esc(o)}</option>`).join('')}</select>`;
+  document.querySelectorAll('#pk button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;draw()});
+  $('#so').onchange=e=>{mode=e.target.value||'Summary';draw()}};
+ $('#m').innerHTML=`<article class="art"><span class="k">${esc(s.cat)} · ${esc(s.regions.join(', '))} · ${s.outlets} outlet${s.outlets>1?'s':''}</span><h1>${esc(s.title)}</h1><div class="ph" data-t="NewsLens">${pic(s)}</div>
+  <div class="picker" id="pk"></div><small>Switch between the summary and the original outlets' coverage.</small><div id="v"></div></article>`;draw();scrollTo(0,0)}
+function roundup(){
+ nav('rd');const r=D.roundup;
+ $('#m').innerHTML=`<div class="art"><span class="k">Round-up of the day</span><h1>${new Date(r.edition+'T12:00').toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'})}</h1><p style="color:var(--mut)">Key facts on the stories trending across outlets. Edition issued from 6am.</p>
+ ${r.stories.map((s,i)=>`<div class="rd"><b>${i+1}</b><div><small class="k">${esc(s.cat)} · ${s.outlets} outlets</small><h3 style="margin:4px 0 8px">${esc(s.title)}</h3><p style="margin:0 0 6px">${esc(s.summary)}</p>${D.stories.some(x=>x.id==s.id)?`<a href="#/s/${s.id}" style="text-decoration:underline;font-size:14px">Open story</a>`:''}</div></div>`).join('')||'<p class="box">Today’s round-up is not ready yet.</p>'}</div>`}
+function about(){nav('x');$('#m').innerHTML=`<div class="art"><h1>How NewsLens works</h1><p class="sum">NewsLens reads the public feeds of ${D.outlets.length} news outlets across the UK, US and the rest of the world, groups headlines about the same event, and shows how widely and how differently it is covered.</p>
+<div class="box"><h4>Stories</h4><p style="margin:0">Duplicates are merged. Follow-ups on the same topic stay separate and are linked as related developments. The homepage ranks stories by how many countries report them, weighted so no single country dominates. The UK and US tabs show stories mostly about those countries.</p></div>
+<div class="box"><h4>Political leaning</h4><p style="margin:0">Left, centre and right labels are rough estimates based on public media-bias ratings, and can be argued with. Use the filter on any page to see what each side is publishing.</p></div>
+<div class="box"><h4>Fact labels and summaries</h4><p style="margin:0">Facts show how many outlets report a claim, which is agreement, not proof. Summaries use headlines and short snippets, never full articles, and may be written by AI. Always read the original reports.</p></div></div>`;scrollTo(0,0)}
+function route(){if(location.hash!==lastHash){area='All areas';country='';lastHash=location.hash}
+ const p=decodeURIComponent(location.hash.slice(2)).split('/');
+ if(p[0]=='s')story(p[1]);else if(p[0]=='about')about();else if(p[0]=='roundup')roundup();
+ else if(p[0]=='hidden')hidden();
+ else if(p[0]=='c')listView(p[1],D.stories.filter(s=>!s.hidden&&s.cat==p[1]),'c',p[1],p[1]);
+ else if(p[0]=='r')listView(p[1]=='Global'?'Global stories':p[1]=='UK'?'UK news':p[1]=='US'?'US news':p[1],D.stories.filter(s=>!s.hidden&&s.regions.includes(p[1])),'r',p[1],p[1]);
+ else home();if(p[0]!='s')scrollTo(0,0)}
+addEventListener('hashchange',route);route();
+</script></body></html>
